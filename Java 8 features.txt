@@ -1,0 +1,91 @@
+https://bnymellon.udemy.com/microservices-software-architecture-patterns-and-techniques/learn/v4/t/lecture/10513338?start=0
+
+1. java 8 collect with map
+2. java 8 sorting 
+3. Java 8 with compare to
+4. java 8 with collection 
+
+
+Java:
+1. Interface  can provide : Static method and default method.
+2. New Data and Time API new api (Jodar.org) api
+3. Method references
+4. Lambda expression (more readable , maintable and concisalbe ) : enable functional programming. ****  and parell programming.
+5. Lambda expression is an enonymous function *** (not having name, return type, modifire )
+6. Compiler can automatically convert by type Inference (no need to mentioned explicity type of the variable )
+7. even not required to write "return keyword" 
+8. to invoke (call) lambda expression using functional interface. (e.g Runnable,Callable, ActionalListner,compariable )are functional interface 
+	only *****one abstract method call functional interface.*****
+	
+9. @Functional Interface (multiple non overriding method,)
+10. Annonymus inner class can extens class or Abstract class, which lambda annonymus can not *****
+11. CompletableFuture? it is option of future, it removed droback of Future 
+		https://www.callicoder.com/java-8-completablefuture-tutorial/ 
+12. What is optional ????? learn : present java util package, that means values may return or not. it is container of Object, 
+	>> It used to avoid null pointer exception, introduced in java 8 java.util.package 
+	
+13. What is functional programming???
+
+
+
+Java Memory Management:
+
+1. Store data in Stack and Heap.
+	a. Stack: each method store in stack, nd scopre in {}, once end comes then it clear out the stack.
+		Each thread has ouwn stack., Data on the stack.
+	b. Heap: store data in longer time, one heap share among all the stacks.***
+	Stack pointed to heap object
+	c. Local variable in stack and reference on Heap
+	d. premitive all variable and values are store in stack.
+	e. if list having objects, that case list object store in Heap and that refer an object 
+		which is in heap https://bnymellon.udemy.com/java-memory-management/learn/v4/t/lecture/6057360?start=0
+	f. 
+
+14. We can customize garbage collector using arguments : https://jelastic.com/blog/garbage-collection/
+
+JAVA threading: 
+1 . Synchronization create a lock for perticular method, (execute with a key , once it complete then it relsed)
+2. Ssynchrinzied may create a race conditon. one class having more then one method as a synchronized that case 
+within the same method other synchronized method can call with the same synchronized key.
+
+but A class having method aa synchronized calling B class Synchronized bb method , from bb calling A class aa2 
+that case it reached to race conditons, 
+bb mehtod wont be called  until aa released the lock. (one class object at a time one synchronized method get called)
+3. What is visibulity in cache : in multi core , each cpu has there own L1 cache, if one CPU update some variables, then it marked it visible
+so that another CPU will pick it up latest value of it0
+4. how we can mark vaiable visible : using synchronized keywod or  volitile 
+5. what happend : if we make read and write method synchronized,: performance will get slow. 
+	>> read and write can't work together, becaus of synchronized, at time only one thread can access,for 	same object operations 
+6. What is the issue with singleton (synchronized) multi core cpu? how to solve reading problem?
+ >> read should not be synchromized,  (but it is a buggy, because return return before write)
+7. what is double check locking? and what bug it is? 
+	>> first check the variable  then after making synchromized and writing it
+	Solution: make variables Volitile, it will fix the issue. (volitile tells the compiler dont cache the value, pick alwas letest
+	)  -- but volitile also hit the performance
+8. Use  enum 	to generate Singleton pattern ************* 
+	
+9. Runnable thead it used when no rerun need 
+10. User Callable when we want to return some future value from running tread
+11. Problem in current way to create thread, - it can be created multiple theads each time object created 
+	and call the runnable , which cant be control 	executor service sole that problem.
+11. Exceutor service having couple of method which solve the problems
+		> Create instance of single thread (it alwasy run a single tread, if we pass multiple instance it run one 
+			by one)
+		>  create thread limited to - fixed thread size(4), max tread run up to 4 if more instance of thread then then	
+			rest thread go to wait state, once queue clear it call remaining theads 
+		>  dynamic thread pool cache , which is dynamically create thread pool queue, it create queue on demand
+		 if no demand then queue will be crear, and waiting time is 60 seconds if no thread instace there it 
+		 will crear the queue
+		> Callable will return the future object we can get it futur.get(object) once thread complte the process.
+		we can set within time frame else it throw exception
+ 1. Executor service
+ 2. Latch : sam as cyclicBarier, wich is behaving countdown, whiere it use if multipe services dependent on it, for e.g.
+Authentication Service/SecurityService/NWF / , count down latch will monitor each service and marking is wait state unill all
+reached to wait, if any one failed will throw an exception.(wait untill count down reach to zero)
+
+3. Casing & Automatic : different form Synchronization, compare and swap value (it is concurrent sharing) 
+4. Skip List smat structure to create list for fast accessing complexity O(logn) used for more data 170M + 
+5. token type  - two tyeps of it 1.  by reference token  2. by value token 
+6. Referesh token  - each time token received refresh token also receive 
+
+

@@ -1,0 +1,239 @@
+H:\java :  read PDF overview of the java 9 features.
+
+main feature introduced in java 9
+1. Jshell  : Java (Repl - Read evluate print loop) tools 
+2. Jpms
+3. Jlink (java linker)
+4. private method in interface
+5. 
+
+
+
+--------------
+Jshell: Interective console
+1. check version jshell -version
+2 exit, command execute with "/"
+3. interactive console use  "/edit"  (default executed symbol "/")
+4. for Jshell some basic packages are alrady imported we can check with "/import"
+5. Jshell will not show, checked exception error whild compilet time.
+6. /help into  => give the basic details of the jshell, (snippets : we need to worite, which will give result )
+(provide list of commands)
+7. / + tab will return list of commands 
+8. javac --module-source-path src -d out -m demoModule   : default jre module compilation 
+8.1 . Run : java --module-path out -m demoModule/packA.Test 
+9. Java Base module : java/jmode :  add to out folder 
+10.  Creat custom JRE :: jlink --module-path out --add-modules demoModule,java.base --output myankcustomjre
+11. myankcustomjre\bin>java -m demoModule/packA.Test
+12. plugin available to create default JRE 
+13. We can customize more to custom JRE (using compress plugin)
+14.  there are 3 level 0= no compression, 1 : constant and string sharing, 3 : zip
+15: compression can improve performance more 
+16. Try with resource enhancement. (it automatically closed), can be added multiple resources, seperated with
+";"  (resource should implemented AutoClosable interface)
+17. advance earlier user must mention resource in try(try(BufferedReader br=new BufferedReader(new FileReader("abc.txt")))   
+)
+17.1 but 1.8 + we can use 
+BufferedReader br=new BufferedReader(new FileReader("abc.txt")))   
+try(br) --- as well (resouce should be final or effectively final can not reassing value
+18. Dimond operator , for java 9 ownwards, we can use diamond operator for anonymous class as well
+19. Var-arg , method(String... x), internally it converted in array,9 if we create generic var-arg , then there may be changes
+for heap pollution (class cast exception ), before java 9, it throw checked warning , method(List<String>... var)),
+@SafeVarags :  annotation until java 7, we were used only for static, final and construcor only , but java  9 ownwards 
+we can use it in private instance method aswell.
+20. Factory method to create un-modifiable collection,earlier collection were created by Collection.unmodifiable/set/List/Map,
+20.1 java 9+ static <E>List<E> of(), (E e1,,,,E e10),  upto 10 method executed but more then 10 elements JDK, because, up to 10
+elements it is a common requirement so that they provided corresponding method bug more then 10 var-arg method will be called
+which is very costely process for JVM, created method which is improve the performance,
+21. if we add null into the list/set which will throw nullpointer exception
+22. if we try the add values in list which will throw unsupportedOperationException exception
+23.  Even after serilized or deserilized :  user cant update the object, it will throe unsupportedOperationexception 
+24. java 9 intrude immutable collection, (prior 9 it was readonly collection)
+
+Steam API enhancement:
+25. java.util.steam , Java.io.stream
+	java.util steam is for operation on collection, 
+	
+	List<Integer> l2=l1.stream().flatMap( i->{ if (i%2 !=0) return Stream.empty();  
+	else return Stream.of(i);
+	}).collect(Collectors.toList()); 
+
+	In Java 9 as the part of Stream API, the following new methods introduced.  
+new method introduced:
+
+1. takeWhile() 
+2. dropWhile()  
+3. Stream.iterate() 
+4. Stream.ofNullable() 
+
+26. Difference between takeWhile() and filter():  
+filter() method will process every element present in the stream and consider the element if predicate is true.  
+But, in the case of takeWhile() method, there is no guarantee that it will process every element of the Stream. 
+It will take elements from the Stream as long as predicate returns true. If predicate returns false, 
+at that point onwards remaining elements won't be processed, i.e rest of the Stream is discarded.   
+
+Eg: Take elements until we will get even numbers. Once we got odd number then stop and ignore rest of the stream. 
+
+Initial List:[2, 4, 1, 3, 6, 5, 8] 
+After Filtering:[2, 4, 6, 8]
+After takeWhile:[2, 4]  
+
+27. dropWhile() ::default Stream  dropWhile(Predicate p) , It is the opposite of takeWhile() method. 
+List<Integer> l2=l1.stream().dropWhile(i->i%2==0).collect(Collectors.toList());   
+Initial List:[2, 4, 1, 3, 6, 5, 8] 
+After dropWhile:[1, 3, 6, 5, 8] 
+
+29. OfNullable: will check is stream null or not to avoid nullpointer exception.
+
+e.g:
+ List l=Stream.ofNullable(100).collect(Collectors.toList()); 
+30. iterate with 3 arguments, the problem with 2 arguments iterate() method there will be chance for infinite loop, to 
+avoid we should limit method,
+e.g.
+This method is something like for loop  
+for(int i =0;i<10;i++){} 
+
+JSHELL:  snipt:
+31: Venry thing you are writing in jshell call code snipt.
+32. package statement does not support by jshell snipt
+33. Startup -snipt, at the time of jshell start:  /list -start : this will import the default packages java util and io
+34. scratch variable hold (temperory jshell variable) the value, we can use the that value as well eg: $1, $2.. 
+35. list the snipts /list 1 5  :::: will display 1st and 5th snipt  (called implisit variable)
+36. we cam drop snipt as well using command 
+	/drop <id>
+37. Working with variables in Jshell: scratch variable,   Jshell we can overried the variable, with type as well
+38. /vars  ::: disply all diclared variable 
+39. Jshell with Method:  we can overried method and can user multiple times as well 
+40. /method  :: will show the list of methods
+41. void method scratch variable will not be crated.
+42. drop method with name as well as snipt id as well /drop <sid>
+43. Jshell editor, to write long method, 
+	jshell> /edit
+44.  We can customized editor as well, with edit plus , using following paht
+jshell> /set editor "C:\\Program Files\\EditPlus\\editplus.exe"
+45. all classes or interface , enum,etc , loaded jshell will show with follwoing commands
+	/types 
+46. how to snipt for future purpose and load it? (we can save all active snipts, and only active snipts as well)
+**** /save <filename with path>testMyFirstJshell.txt
+47. Open the same file  
+*** /open <file name>
+48. Jshell reset state, it will reset to rerivious state (previous session will be copied)
+ /reload -restore
+ /reload reset  -- reset to default state
+49. How to set jar file in jshell:*************
+49.1. set environment variable then jshell will get it. (path variable)
+49.2. set jar path : jshell --class-path c:\...\jdbc.jar
+49.3  /env --class-path <jar path>
+49.4 set oracle jar file path in enviroment variable
+50. We can customize jshell startup:
+	jshell --startup default <file name.jsh>   -- will include in default statup
+51. jshell provide shortcut for printing :
+	print("");
+	
+JPMS::::::: Java Platform module system.  (devlopment concept started in year 2005) JDK enhancement proposal 
+52. Develop application by using module. every module should compulsory contain module-info.java file. otherwise jvm wont 
+consider it is a module application.
+53. jdk itself modulirized. java 9 group into several module
+e.g 
+java.base, '
+java.logging,
+java.sql
+ 
+54. problem 1 in existing jar approch, in run time application could throw no class def found exception,
+55. but java 9 first identify all the dependency in module-info.java, before start the exceution, 
+
+56. problem 2 in existing version conflict, shadowing problem
+	JVM always search class path from left to right until sutable match found, 
+	classpath= jar1;jar2;jar3;jar4
+if we required jar3 for the program, but class path contain the same in jar1 and jar2, then java pick jar1, because jvm 
+search left to rith, which may cause abnormal behaviour,
+
+hance java 9 module contain specific version, will pick the same, so no version conflict problem 
+
+57. Security problem 3  : there no way to hide packages of jar files.
+public means to much public , but in java 9 module system, we can export particular package of moduel , only this exported
+package can be used by other modules, remainign packges of that module are not visible to outside. hance strong
+ENCAPSULATION is available in java 9 and there is no change of security problems
+
+if module wont exported the corresponding package, that it cantnot be accessed by other modules. 
+
+58. problem 4,  JDK/JRE having monolithik structure and very large size
+ jdk1,1 : 250 classes
+ jdk2 : 500 classes
+ ..
+ jdk8 : 4000+classes
+ not sutable for micro services, rt.jar size around 60mb, not good for portable devices. it will create memory and performance
+ problem.
+ but java 9, 
+ 
+59. util java 8 , devlopment was jar based, (Monolithic structure, and size is very large(jar hell))
+
+60. JDK 9+ is modulirized, rt.jar divided into multiple modules, no jar is available, no JRE ,
+
+61. only and only exported module can be visible/ access by other module. (module-info.java***)
+
+62. What is Jar hell and class path hell ????????????????
+ - no class defination found, version conflict , security problem , heavy size,   : Jar hell
+ 
+63. Module-info.java :::::: special files. (king of module)
+
+64. module-inf.java : need to define module specific dependencies. (require module)
+
+65 e.g.:::: export packge 2 , inside module-info.java
+66.  package is mandatory in java 9 module based programming.
+
+Process API update: (JEP - 102 ) (jDK enhancement proposal)
+
+67.  process API is propossed to communate with processer, and handel process management is eassy, running process can 
+distory, is very eassy, verious child process of current process, who started, what time started, ******* 
+
+Unitl java 8, communicating with processor/os/machine is very difficult. We required to write very
+complex native code and we have to use 3rd party jar files.
+The way of communication with processor is varied from system to system (i.e. os to os). For
+example, in windows one way, but in Mac other way. Being a programmer we have to write code
+based on operating system, which makes programming very complex.
+
+68. Added a interface ProcessHandle.info , by using it we can get the complete information about the process
+
+69. this feature added in java.lang package so that no  import statement required.
+70. ProcessBuilder to create the process***
+71. get the process details in interface ProcessHandle ***
+72. ProcessBuilder to build your own process. *** ( java program to compile another java program, and run another java,
+program, we can automate any process)
+73. We can distory the process as well.  from processbuilder object.
+74. we can collect all the active process Stream<ProcessHandle> sph = ProcessHandle.allProcesses();
+		sph.forEach(s -> System.out.println(s.info()));
+
+HTTP/2 Client api chagne: which help to call the API with fget, post., put method
+
+75. problem , only one request per TCP connection, support only synchronous communication (blocking mode), only support 1.1 protocal
+76.  added feature in Incubator module and package, jdk.incubator.httpclient, jdk.incubator.http package. (in java 9 it is not full mature)
+77. HttpClient first : we can sent request to webserver, using : HttpRequest, finally get HttpResponse,
+78. follwoing is the process:
+	firt create the httpClient object:
+	1. HttpClient client = HttpClient.newHttpCliet()
+	url = "http://URL"
+	2. HttpRequest request = HttpRequest.newBuilder(url).get().build();
+	3.  HttpResponse response = client.send(request,httpResponse.BodyHandler.asString/as File); -- to store in string or file
+	or client.sendAsync(....)
+HttpResponse :: three steps
+
+1. Status code/status Line
+2. Response Headers 
+3. Response BodyHandler
+
+79. Asynchronous process, will return data in concurrentFutuer , we no need to wait till response come , we can continue do our job, 
+this class have "isDone" to check response is ready or not no need to wait untill get the response.
+ 
+
+----------------
+Java 13 feature.
+1. Bite buffer added: for multipe process 
+2. Case added Yeald to return , 
+3. added a text preview, to view muitpple line
+4. added text area to add multiple lines string no need add special character to break the line or next line,
+
+
+
+
+
+ 
